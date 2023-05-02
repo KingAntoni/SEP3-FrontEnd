@@ -1,0 +1,49 @@
+@page "/Register"
+@using Model.Model
+@using BlazorWASM.Services.Impl
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+<h3>Register</h3>
+@if(!string.IsNullOrEmpty(message))
+{
+    <p>@message</p>
+}
+<EditForm Model="user" OnValidSubmit="RegisterUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="Input_Email">Email address</label>
+        <InputText id="Input_Email" type="email" class="form-control" @bind-Value="user.Email" />
+    </div>
+    <div class="form-group">
+            <label for="Input_Username">Username</label>
+            <InputText id="Input_Username" class="form-control" @bind-Value="user.Username" />
+        </div>
+    <div class="form-group">
+        <label for="Input_Password">Password</label>
+        <InputText id="Input_Password" type="password" class="form-control" @bind-Value="user.Password" />
+    </div>
+    <div class="form-group">
+        <label for="Input_ConfirmPassword">Confirm Password</label>
+        <InputText id="Input_ConfirmPassword" type="password" class="form-control" @bind-Value="user.ConfirmPassword" />
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+@code {
+    private RegisterModel user = new RegisterModel();
+    private string message;
+    private async Task RegisterUser()
+    {
+        try{
+        await AuthService.Register(user);
+            NavigationManager.NavigateTo("/Login");
+        }
+        catch(Exception ex)
+        {
+            message= ex.Message;
+            Console.WriteLine(ex.Message);
+        }
+        
+        
+    }
+}
