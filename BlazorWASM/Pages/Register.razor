@@ -12,13 +12,25 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
+        <label for="Input_FirstName">First Name</label>
+        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="Input_LastName">Last Name</label>
+        <InputText id="Input_LastName" class="form-control" @bind-Value="user.LastName" />
+    </div>
+    <div class="form-group">
+        <label for="Input_DOB">Date of Birth</label>
+        <InputDate id="Input_DOB" class="form-control" @bind-Value="user.Birthday" />
+    </div>
+    <div class="form-group">
         <label for="Input_Email">Email address</label>
         <InputText id="Input_Email" type="email" class="form-control" @bind-Value="user.Email" />
     </div>
     <div class="form-group">
-            <label for="Input_Username">Username</label>
-            <InputText id="Input_Username" class="form-control" @bind-Value="user.Username" />
-        </div>
+        <label for="Input_Username">Username</label>
+        <InputText id="Input_Username" class="form-control" @bind-Value="user.Username" />
+    </div>
     <div class="form-group">
         <label for="Input_Password">Password</label>
         <InputText id="Input_Password" type="password" class="form-control" @bind-Value="user.Password" />
@@ -29,11 +41,15 @@
     </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
+
 @code {
-    private RegisterModel user = new RegisterModel();
+    private RegisterModel user = new RegisterModel{Birthday = DateTime.Now};
+    
+    
     private string message;
     private async Task RegisterUser()
     {
+        if(CheckDateOfBirth(user))
         try{
         await AuthService.Register(user);
             NavigationManager.NavigateTo("/Login");
@@ -45,5 +61,24 @@
         }
         
         
+    }
+    private bool CheckDateOfBirth(RegisterModel user)
+    {
+        
+        if (user.Birthday > DateTime.Now.AddYears(-18))
+        {
+    // Date of birth is less than 18 years ago
+            Console.WriteLine("You must be at least 18 years old.");
+            message = "You must be at least 18 years old.";
+            return false;
+    // You can display an error message or take any other action as needed
+        }
+        else
+        {
+    // Date of birth is 18 years ago or earlier
+            return true;
+
+    // You can proceed with the form submission or take any other action as needed
+        }
     }
 }
