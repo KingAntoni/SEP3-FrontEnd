@@ -9,4 +9,15 @@ public interface IAuthService
     Task<UserModel> GetUser(String username);
     
     Task<UserModel> UpdateUser(UserModel user);
+    
+    Task MatchUser(MatchModel match);
+
+    Task<List<UserModel>> GetUsers(string username);
+
+    Task<List<UserModel>> GetMatches(string username);
+
+    Task<bool> LikeUser(String username1, String username2);
+
+    public String GetCurrentUser();
+
 }

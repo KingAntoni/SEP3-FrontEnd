@@ -20,6 +20,10 @@
     <label id="ProfileValue">@user.Birthday.ToString("dd/MM/yyyy") </label>
 </div>
 <div >
+    <label for="Input_Birthday">Age:      </label>
+    <label id="ProfileValue">@user.Age </label>
+</div>
+<div >
     <label for="Input_Email">Email:      </label>
     <label id="ProfileValue">@user.Email </label>
 </div>
@@ -38,9 +42,10 @@
     public string username { get; set; }
    protected override async Task OnInitializedAsync()
    {
-    //   user = new UserModel("king@gmial.com", "KingAntoni420", "Antonio", "Goreta", new DateTime(), "King");
+    //   user = new UserModel("king@gmail.com", "KingAntoni420", "Antonio", "Goreta", new DateTime(), "King");
     user = await AuthService.GetUser(username);
    }
+    
     public void EditProfile()
     {
         NavigationManager.NavigateTo("/EditProfile/"+ username);

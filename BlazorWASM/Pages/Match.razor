@@ -1,0 +1,100 @@
+@page "/match"
+@using Model.Model
+@using System.Collections.Generic
+@using BlazorWASM.Services.Impl
+@using BlazorWASM.Services.Interfaces
+@inject HttpClient httpClient
+@inject IAuthService AuthService
+<h3>Match</h3>
+
+@if (users != null && users.Count > 0)
+{
+    <div class="match-container">
+        <div class="profile-card">
+            <div class="carousel">
+              @foreach (var picture in currentDisplayedUser.Pictures)
+              {
+                <div class="slide">
+                  <img src=@currentDisplayedUser.Pictures alt="Not available">
+                </div>
+              }
+            </div>
+            <div class="user-info">
+                <h4>@currentDisplayedUser.FirstName</h4>
+                <p>Age: @currentDisplayedUser.Age</p>
+                <p>Description: @currentDisplayedUser.Description</p>
+            </div>
+            <div class="action-buttons">
+                <button class="LikeButton" @onclick="Like">Like</button>
+                <button class="DislikeButton" @onclick="Dislike">Dislike</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>No users available</p>
+}
+
+@code {
+    private List<UserModel> users;
+    private int currentIndex = 0;
+    private UserModel currentDisplayedUser;
+    private string username;
+
+    protected override async Task OnInitializedAsync()
+    {
+    // Call the GetUsers method from the instance with the desired parameters
+        username = AuthService.GetCurrentUser();
+        users = await AuthService.GetUsers(username);
+
+        if (users != null && users.Count > 0)
+        {
+            currentDisplayedUser = users[currentIndex];
+            if (currentDisplayedUser.Pictures?.Count > 0)
+            {
+                string pictureUrl = currentDisplayedUser.Pictures[0]?.ToString(); // Get the URL of the picture
+                byte[] pictureData = await httpClient.GetByteArrayAsync(pictureUrl); // Download the picture as a byte array
+    // Use the pictureData as needed (e.g., display it in an <img> tag)
+            }
+        }
+    }
+
+
+    private void Like()
+    {
+        
+    bool matched=  AuthService.LikeUser(username,currentDisplayedUser.Username).Result;
+        if (matched)
+        {
+            //ShowAlert that you matched
+        }
+        MoveToNextUser();
+    }
+
+    private void Dislike()
+    {
+     
+        MoveToNextUser();
+    }
+
+    private async Task MoveToNextUser()
+    {
+        currentIndex++;
+        if (currentIndex < users.Count)
+        {
+            currentDisplayedUser = users[currentIndex];
+            if (currentDisplayedUser.Pictures?.Count > 0)
+            {
+                string pictureUrl = currentDisplayedUser.Pictures[0]?.ToString();
+                byte[] pictureData = await httpClient.GetByteArrayAsync(pictureUrl);
+            }
+        }
+        else
+        {
+            currentDisplayedUser = null;
+        }
+    }
+    
+    
+}
