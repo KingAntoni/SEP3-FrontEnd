@@ -1,0 +1,47 @@
+@page "/Matches"
+@using Model.Model
+@using System.Net
+@using BlazorWASM.Services.Impl
+@inject IAuthService AuthService
+<h3>Matches</h3>
+@if (matches != null)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Age</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in matches)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Username</td>
+                <td><button class="btn btn-primary" @onclick="() => OpenChat(user)">Chat</button></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+@code {
+    List<UserModel> matches;
+    protected override async Task OnInitializedAsync()
+    {
+        matches = await AuthService.GetMatches(AuthService.GetCurrentUser());
+        
+    }
+    
+    public void OpenChat(UserModel user)
+    {
+       // NavigationManager.NavigateTo($"/Chat/{user.Id}");
+    }
+}

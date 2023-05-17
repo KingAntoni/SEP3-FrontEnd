@@ -14,4 +14,13 @@ public class RegisterModel
     public string LastName { get; set; }
     
     public DateTime Birthday { get; set; }
-}
+    
+    public string Description { get; set; }
+
+    public override string ToString()
+    {
+        return "Email: " + Email + " Username: " + Username + " Password: " + Password + " ConfirmPassword: " + ConfirmPassword + " FirstName: " + FirstName + " LastName: " + LastName + " Birthday: " + Birthday + " Description: " + Description;
+    }
+        
+    }
+    

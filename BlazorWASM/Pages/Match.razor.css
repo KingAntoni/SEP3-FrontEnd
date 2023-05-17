@@ -1,0 +1,41 @@
+.LikeButton{
+    background-color: green;
+    color: white;
+}
+
+.DisikeButton{
+    background-color: red;
+    color: white;
+}
+.carousel {
+    width: 400px; 
+    height: 300px; 
+    overflow: hidden;
+}
+
+.slide {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease;
+}
+
+.carousel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes carouselAnimation {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.carousel .slide:not(:first-child) {
+    animation: carouselAnimation 3s infinite;
+    animation-delay: -3s;
+}

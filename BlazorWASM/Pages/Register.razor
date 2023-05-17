@@ -50,8 +50,11 @@
     private async Task RegisterUser()
     {
         if(CheckDateOfBirth(user))
-        try{
+        try
+        {
+            user.Description = "I am a new user";
         await AuthService.Register(user);
+            Console.WriteLine(user.ToString());
             NavigationManager.NavigateTo("/Login");
         }
         catch(Exception ex)
