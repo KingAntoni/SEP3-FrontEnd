@@ -7,27 +7,27 @@
 <h3>EditProfile</h3>
 <div >
     <label for="Input_FirstName">First Name:      </label>
-        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.FirstName" />
+    <InputText id="Input_FirstName" class="form-control" @bind-Value="user.FirstName" />
 </div>
 <div class="form-group">
     <label for="Input_LastName">Last Name:      </label>
-        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.LastName" />
+    <InputText id="Input_FirstName" class="form-control" @bind-Value="user.LastName" />
 </div>
 <div >
     <label for="Input_Birthday">Date of Birth:      </label>
-        <InputDate id="Input_FirstName" class="form-control" @bind-Value="user.Birthday" />
+    <InputDate id="Input_FirstName" class="form-control" @bind-Value="user.Birthday" />
 </div>
 <div >
     <label for="Input_Email">Email:      </label>
-        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Email" />
+    <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Email" />
 </div>
 <div >
     <label for="Input_Username">Username:      </label>
-        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Username" />
+    <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Username" />
 </div>
 <div >
     <label for="Input_Description">Description:      </label>
-        <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Description" />
+    <InputText id="Input_FirstName" class="form-control" @bind-Value="user.Description" />
 </div>
 <button @onclick="SaveProfile">Save</button>
 @code {
@@ -38,16 +38,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-     user= await IAuthService.GetUser(username);
-        //user = new UserModel("king@gmial.com", "KingAntoni420", "Antonio", "Goreta", new DateTime(), "King");
+        user= await IAuthService.GetUser(username);
+    //user = new UserModel("king@gmial.com", "KingAntoni420", "Antonio", "Goreta", new DateTime(), "King");
     }
 
     public async void SaveProfile()
     {
         try
         {
-        await IAuthService.UpdateUser(user);
-        NavigationManager.NavigateTo("/Profile/" + user.Username);
+            await IAuthService.UpdateUser(user);
+            NavigationManager.NavigateTo("/Profile/" + user.Username);
         }
         catch (Exception e)
         {

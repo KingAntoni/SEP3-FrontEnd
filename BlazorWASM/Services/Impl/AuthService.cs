@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using BlazorWASM.Pages;
@@ -9,8 +11,63 @@ namespace BlazorWASM.Services.Interfaces;
 
 public class AuthService : IAuthService
 {
+    
     private readonly HttpClient client = new();
     private String currentUser;
+    public static string? Jwt { get; private set; } = "";
+    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
+    
+        
+    public Task<ClaimsPrincipal> GetAuthAsync()
+    {
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
+        return Task.FromResult(principal);
+    }
+    
+    public Task Logout()
+    {
+        Jwt = null;
+        ClaimsPrincipal principal = new();
+        OnAuthStateChanged.Invoke(principal);
+        return Task.CompletedTask;
+    }
+    
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    {
+        string payload = jwt.Split('.')[1];
+        byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+        Dictionary<string, object>? keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
+    }
+    
+    private static byte[] ParseBase64WithoutPadding(string base64)
+    {
+        switch (base64.Length % 4)
+        {
+            case 2:
+                base64 += "==";
+                break;
+            case 3:
+                base64 += "=";
+                break;
+        }
+
+        return Convert.FromBase64String(base64);
+    }
+    private static ClaimsPrincipal CreateClaimsPrincipal()
+    {
+        if (string.IsNullOrEmpty(Jwt))
+        {
+            return new ClaimsPrincipal();
+        }
+
+        IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
+    
+        ClaimsIdentity identity = new(claims, "jwt");
+
+        ClaimsPrincipal principal = new(identity);
+        return principal;
+    }
     public async Task Login(LoginModel login)
     {
         string userAsJson = JsonSerializer.Serialize(login);
@@ -24,17 +81,41 @@ public class AuthService : IAuthService
     }
     public async Task Register(RegisterModel register)
     {
-        Console.WriteLine(register.ToString());
-        string userAsJson = JsonSerializer.Serialize(register);
-        Console.WriteLine(userAsJson);
-        StringContent content = new(userAsJson, Encoding.UTF8, "application/json");Console.WriteLine(content);
-        HttpResponseMessage response = await client.PostAsync("http://localhost:8090/users/save", content);
-        string responseContent = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
+        using (HttpClient client = new HttpClient())
         {
-            throw new Exception(responseContent);
+                MultipartFormDataContent formData = new MultipartFormDataContent();
+
+                // Add user data fields
+                formData.Add(new StringContent(register.Email), "Email");
+                formData.Add(new StringContent(register.Username), "Username");
+                formData.Add(new StringContent(register.Password), "Password");
+                formData.Add(new StringContent(register.ConfirmPassword), "ConfirmPassword");
+                formData.Add(new StringContent(register.FirstName), "FirstName");
+                formData.Add(new StringContent(register.LastName), "LastName");
+                formData.Add(new StringContent(register.Birthday.ToString()), "Birthday");
+                formData.Add(new StringContent(register.Description), "Description");
+
+                // Add pictures
+                for (int i = 0; i < register.Pictures.Count; i++)
+                {
+                    byte[] pictureData = Convert.FromBase64String(register.Pictures[i]);
+                    ByteArrayContent pictureContent = new ByteArrayContent(pictureData);
+                    pictureContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                    formData.Add(pictureContent, $"Picture{i + 1}", $"Picture{i + 1}.jpg");
+                }
+
+                HttpResponseMessage response = await client.PostAsync("http://localhost:8090/users/save", formData);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(responseContent);
+                }
         }
+
+        
     }
+
     public async Task<UserModel> GetUser(String username)
     {
         

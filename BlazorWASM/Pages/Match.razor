@@ -2,7 +2,6 @@
 @using Model.Model
 @using System.Collections.Generic
 @using BlazorWASM.Services.Impl
-@using BlazorWASM.Services.Interfaces
 @inject HttpClient httpClient
 @inject IAuthService AuthService
 <h3>Match</h3>
@@ -28,6 +27,13 @@
                 <button class="LikeButton" @onclick="Like">Like</button>
                 <button class="DislikeButton" @onclick="Dislike">Dislike</button>
             </div>
+            @if (showMatchAlert)
+            {
+                <div class="alert alert-success" role="alert">
+                    You have matched with @currentDisplayedUser.FirstName!
+                    <button type="button" class="close" @onclick="DismissAlert">×</button>
+                </div>
+            }
         </div>
     </div>
 }
@@ -64,10 +70,10 @@ else
     private void Like()
     {
         
-    bool matched=  AuthService.LikeUser(username,currentDisplayedUser.Username).Result;
+        bool matched = AuthService.LikeUser(username, currentDisplayedUser.Username).Result;
         if (matched)
         {
-            //ShowAlert that you matched
+            showMatchAlert = true;
         }
         MoveToNextUser();
     }
@@ -96,5 +102,12 @@ else
         }
     }
     
+    private bool showMatchAlert = false;
+    
+    private void DismissAlert()
+    {
+        showMatchAlert = false;
+    }
+
     
 }

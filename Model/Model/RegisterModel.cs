@@ -16,6 +16,12 @@ public class RegisterModel
     public DateTime Birthday { get; set; }
     
     public string Description { get; set; }
+    
+    public String Gender { get; set; }
+    
+    public String Preference { get; set; }
+
+    public List<string> Pictures { get; set; } = new List<string>(3);
 
     public override string ToString()
     {

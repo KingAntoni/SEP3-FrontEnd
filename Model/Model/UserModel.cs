@@ -1,12 +1,27 @@
-using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Model.Model
 {
     public class UserModel
     {
-        private ArrayList _pictures;
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime Birthday { get; set; }
+        public string Description { get; set; }
+        
+        [RegularExpression("^(male|female)$", ErrorMessage = "Gender must be 'male' or 'female'.")]
+        public string Gender { get; set; }
+        
+        [RegularExpression("^(male|female)$", ErrorMessage = "Preference must be 'male' or 'female'.")]
+        public string Preference { get; set; }
+        
+        public List<string> Pictures { get; set; }
 
-        public UserModel(string email, string username, string firstName, string lastName, DateTime birthday, string description, char gender, char preference)
+        public UserModel(string email, string username, string firstName, string lastName, DateTime birthday, string description, string gender, string preference, List<string> pictures)
         {
             Email = email;
             Username = username;
@@ -16,36 +31,20 @@ namespace Model.Model
             Description = description;
             Gender = gender;
             Preference = preference;
-            // PictureUrl = pictureUrl;
-        }
-
-        public string Email { get; set; }
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime Birthday { get; set; }
-        public string Description { get; set; }
-        
-        public char Gender { get; set; }
-        
-        public char Preference { get; set; }
-
-        public ArrayList Pictures
-        {
-            get => _pictures;
-            set => _pictures = value;
+            Pictures = pictures;
         }
 
         public int Age()
         {
             DateTime now = DateTime.Today;
             int age = now.Year - Birthday.Year;
-            if (Birthday > now.AddYears(-age)) age--;
+            if (Birthday > now.AddYears(-age))
+                age--;
             return age;
         }
-        }
-    
+    }
 }
+
 
     
     

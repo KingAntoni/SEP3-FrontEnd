@@ -3,14 +3,20 @@
 @using BlazorWASM.Services.Impl
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+
 <h3>Register</h3>
-@if(!string.IsNullOrEmpty(message))
+
+@if (!string.IsNullOrEmpty(message))
 {
     <p>@message</p>
 }
+
 <EditForm Model="user" OnValidSubmit="RegisterUser">
     <DataAnnotationsValidator />
     <ValidationSummary />
+
     <div class="form-group">
         <label for="Input_FirstName">First Name</label>
         <InputText id="Input_FirstName" class="form-control" @bind-Value="user.FirstName" />
@@ -39,6 +45,38 @@
         <label for="Input_ConfirmPassword">Confirm Password</label>
         <InputText id="Input_ConfirmPassword" type="password" class="form-control" @bind-Value="user.ConfirmPassword" />
     </div>
+    
+<div class="form-group">
+    <label for="Input_Gender">Gender</label>
+    <InputSelect id="Input_Gender" class="form-control" @bind-Value="user.Gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </InputSelect>
+</div>
+
+<div class="form-group">
+    <label for="Input_Preference">Preference</label>
+    <InputSelect id="Input_Preference" class="form-control" @bind-Value="user.Preference">
+        <option value="">Select Preference</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </InputSelect>
+</div>
+    
+    <div class="form-group">
+        <label for="Input_Picture1">Picture 1</label>
+        <InputFile id="Input_Picture1" class="form-control" accept="image/*" OnChange="e => UpdatePicture(0, e)" />
+    </div>
+    <div class="form-group">
+        <label for="Input_Picture2">Picture 2</label>
+        <InputFile id="Input_Picture2" class="form-control" accept="image/*" OnChange="e => UpdatePicture(1, e)" />
+    </div>
+    <div class="form-group">
+        <label for="Input_Picture3">Picture 3</label>
+        <InputFile id="Input_Picture3" class="form-control" accept="image/*" OnChange="e => UpdatePicture(2, e)" />
+    </div>
+
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
 
@@ -82,6 +120,15 @@
             return true;
 
     // You can proceed with the form submission or take any other action as needed
+        }
+    }
+    
+    private void UpdatePicture(int index, InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            user.Pictures[index] = file.Name;
         }
     }
 }

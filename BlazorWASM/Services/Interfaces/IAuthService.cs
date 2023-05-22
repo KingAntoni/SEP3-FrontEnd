@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Model.Model;
 
 namespace BlazorWASM.Services.Impl;
@@ -19,5 +20,10 @@ public interface IAuthService
     Task<bool> LikeUser(String username1, String username2);
 
     public String GetCurrentUser();
+    
+    
+    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; }
 
+    public Task Logout();
+    Task<ClaimsPrincipal> GetAuthAsync();
 }

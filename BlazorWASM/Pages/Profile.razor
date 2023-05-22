@@ -42,8 +42,7 @@
     public string username { get; set; }
    protected override async Task OnInitializedAsync()
    {
-    //   user = new UserModel("king@gmail.com", "KingAntoni420", "Antonio", "Goreta", new DateTime(), "King");
-    user = await AuthService.GetUser(username);
+       user = await AuthService.GetUser(username);
    }
     
     public void EditProfile()

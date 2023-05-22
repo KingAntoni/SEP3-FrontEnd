@@ -4,19 +4,22 @@ public class MessageModel
 {
     public string Message { get; set; }
 
-    public string Username { get; set; }
+    public string Sender { get; set; }
 
+    public string Receiver { get; set; }
     public string TimeStamp { get; set; }
 
-    public MessageModel(string message, string username, string timeStamp)
+    public MessageModel(string message, string username1,string username2, string timeStamp)
     {
         Message = message;
-        Username = username;
+        Sender = username1;
+        Receiver = username2;
         TimeStamp = timeStamp;
     }
 
+    
     public override string ToString()
     {
-        return "Message: " + Message + " Username: " + Username + " TimeStamp: " + TimeStamp;
+        return "Message: " + Message + " Sender: " + Sender + " Receiver: " + Receiver +" TimeStamp: " + TimeStamp;
     }
 }
