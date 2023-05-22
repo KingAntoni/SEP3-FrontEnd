@@ -1,9 +1,27 @@
 ﻿@using System.Security.Claims
 @using BlazorWASM.Services.Impl
-@using BlazorWASM.Services.Interfaces
+
 @using Microsoft.AspNetCore.Authorization
 @using Model.Model
  @inject IAuthService AuthService
+@inherits LayoutComponentBase
+@using Login
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <LoginButtons/>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using BlazorWASM.Pages;
@@ -5,12 +6,69 @@ using BlazorWASM.Services.Impl;
 using Microsoft.AspNetCore.Components;
 using Model.Model;
 
-namespace BlazorWASM.Services.Interfaces;
+namespace BlazorWASM.Services.Impl;
 
 public class AuthService : IAuthService
 {
     private readonly HttpClient client = new();
     private String currentUser;
+
+    public static string? Jwt { get; private set; } = "";
+
+    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
+    
+    
+    public Task<ClaimsPrincipal> GetAuthAsync()
+    {
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
+        return Task.FromResult(principal);
+    }
+    
+    public Task Logout()
+    {
+        Jwt = null;
+        ClaimsPrincipal principal = new();
+        OnAuthStateChanged.Invoke(principal);
+        return Task.CompletedTask;
+    }
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    {
+        string payload = jwt.Split('.')[1];
+        byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+        Dictionary<string, object>? keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
+    }
+    
+    private static byte[] ParseBase64WithoutPadding(string base64)
+    {
+        switch (base64.Length % 4)
+        {
+            case 2:
+                base64 += "==";
+                break;
+            case 3:
+                base64 += "=";
+                break;
+        }
+
+        return Convert.FromBase64String(base64);
+    }
+    
+    private static ClaimsPrincipal CreateClaimsPrincipal()
+    {
+        if (string.IsNullOrEmpty(Jwt))
+        {
+            return new ClaimsPrincipal();
+        }
+
+        IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
+    
+        ClaimsIdentity identity = new(claims, "jwt");
+
+        ClaimsPrincipal principal = new(identity);
+        return principal;
+    }
+    
     public async Task Login(LoginModel login)
     {
         string userAsJson = JsonSerializer.Serialize(login);
@@ -20,8 +78,15 @@ public class AuthService : IAuthService
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(responseContent);
-        }currentUser= login.Username;
+        }string token = responseContent;
+        Jwt = token;
+
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
+
+        OnAuthStateChanged.Invoke(principal);
     }
+    
+    
     public async Task Register(RegisterModel register)
     {
         Console.WriteLine(register.ToString());

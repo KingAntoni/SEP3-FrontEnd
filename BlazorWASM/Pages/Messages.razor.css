@@ -1,0 +1,36 @@
+.message-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.sent-message {
+    background-color: #e2f0fc;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-left: auto;
+    max-width: 70%;
+}
+
+.received-message {
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    padding: 8px 12px;
+    max-width: 70%;
+}
+
+.message-sender {
+    font-weight: bold;
+}
+
+.message-content {
+    word-wrap: break-word;
+}
+
+input[type="text"] {
+    margin-right: 10px;
+}
+
+button {
+    margin-top: 10px;
+}

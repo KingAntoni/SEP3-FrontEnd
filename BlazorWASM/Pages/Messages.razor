@@ -1,6 +1,72 @@
 @page "/Messages"
-<h3>Messages</h3>
+@using Model.Model
+@using BlazorWASM.Services.Impl
+@inject IMessageService IMessageService
 
-@code {
+
+<h3>Messages</h3>
+@foreach (var message in MessagesList)
+{
+    <div class="message-container">
+        @if (message.Sender == Message.Sender)
+        {
+            <p class="sent-message">
+                <span class="message-content">@message.Message</span>
+                <span class="message-sender">You</span>
+            </p>
+        }
+        else
+        {
+            <p class="received-message">
+                <span class="message-sender">@message.Sender</span>
+                <span class="message-content">@message.Message</span>
+            </p>
+        }
+    </div>
+}
+
+<div>
+    <input type="text" @bind="@Message.Sender" placeholder="Sender" />
+    <input type="text" @bind="@Message.Receiver" placeholder="Receiver" />
+    <input type="text" @bind="@Message.Message" placeholder="Message" />
+    <button @onclick="SendMessageToReceiver">Send Message</button>
+</div>
+
+
+@code { 
+    private MessageModel Message { get; set; }
+    protected List<MessageModel> MessagesList { get; set; } = new List<MessageModel>();
     
+    private void SendMessage(string message, string sender, string receiver, string timeStamp)
+    {
+        var newMessage = new MessageModel(message, sender, receiver, timeStamp);
+
+        MessagesList.Add(newMessage);
+    }
+    
+   
+
+    public async Task SendMessageToReceiver()
+    {
+    // Get the current user's name and the receiver's name
+        string sender = Message.Sender; // Replace with actual sender's name
+        string receiver = Message.Receiver; // Replace with actual receiver's name
+
+    // Get the current timestamp
+        string timestamp = DateTime.Now.ToString();
+
+    // Call the SendMessage method to send the message
+        SendMessage(Message.Message, sender, receiver, timestamp);
+
+        await IMessageService.SendMessageToServer(Message.Message, sender, receiver, timestamp);
+    
+    // Optionally, you can reset the MessageContent property to clear the input field
+        Message.Message = string.Empty;
+    }
+    
+   
+    
+  
+    
+
 }
