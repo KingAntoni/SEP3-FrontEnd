@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWASM", "BlazorWASM\Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{2252FD6A-D972-4F39-8533-4493135A57C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcDataAcces", "GrpcDataAcces\GrpcDataAcces.csproj", "{02B732D8-C72F-4F11-9F5B-67890EDC685F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{2252FD6A-D972-4F39-8533-4493135A57C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2252FD6A-D972-4F39-8533-4493135A57C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2252FD6A-D972-4F39-8533-4493135A57C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B732D8-C72F-4F11-9F5B-67890EDC685F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B732D8-C72F-4F11-9F5B-67890EDC685F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B732D8-C72F-4F11-9F5B-67890EDC685F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B732D8-C72F-4F11-9F5B-67890EDC685F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
